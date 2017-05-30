@@ -9,8 +9,8 @@ var target = "dist";
 gulp.task('build', function() {
     return gulp.src(
     		[
-    			'src/app/main.js',
-    			'src/**/*.js'
+    			'src/main/js/module.js',
+    			'src/main/js/src/**/*.js'
     		]
     	)
         .pipe(concat('js/angular-plugin.js'))
