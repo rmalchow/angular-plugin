@@ -10,7 +10,7 @@ if [ "$?" != "0" ]; then
 	exit -2
 fi
 
-version=`jq '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .version | split(".")[2]  | tonumber + 1 | tostring) ] | join(".")' package.json`
+version=`jq -r '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .version | split(".")[2]  | tonumber + 1 | tostring) ] | join(".")' package.json`
 echo "version is ${version}"
 
 package=`jq --arg version ${version} '.version = $version' package.json`
