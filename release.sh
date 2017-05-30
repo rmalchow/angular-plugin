@@ -13,7 +13,7 @@ fi
 version=`jq '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .version | split(".")[2]  | tonumber + 1 | tostring) ] | join(".")' package.json`
 echo "version is ${version}"
 
-package=`jq '.version = ${version}' package.json`
+package=`jq --arg version ${version} '.version = $version' package.json`
 echo ${package}
 
 #git tag "${version}"
