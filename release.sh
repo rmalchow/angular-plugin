@@ -1,3 +1,5 @@
+
+cd `dirname $0`
 git diff --exit-code 2>&1 > /dev/null
 if [ "$?" != "0" ]; then
 	echo "there are unstaged changes"
@@ -14,8 +16,10 @@ version=`jq -r '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .ve
 echo "version is ${version}"
 
 package=`jq --arg version ${version} '.version = $version' package.json`
-echo ${package}
+echo ${package} > package.json
 
-#git tag "${version}"
-#git add .
+git tag "${version}"
+git add .
+git commit -m "[skip ci] release version ${version}"
+git push
 
