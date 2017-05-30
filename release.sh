@@ -15,11 +15,12 @@ fi
 version=`jq -r '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .version | split(".")[2]  | tonumber + 1 | tostring) ] | join(".")' package.json`
 echo "version is ${version}"
 
-package=`jq --arg version ${version} '.version = $version' package.json`
-echo ${package} > package.json
+jq --arg version ${version} '.version = $version' package.json > package.json.new
+rm package.json
+mv package.json.new package.json
 
-git tag "${version}"
+git tag "${version}" 
 git add .
 git commit -m "[skip ci] release version ${version}"
-git push
+git push --tags
 
