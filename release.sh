@@ -24,3 +24,4 @@ git add .
 git commit -m "[skip ci] release version ${version}"
 git push --tags
 
+npm publish

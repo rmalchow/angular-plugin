@@ -3,7 +3,6 @@ var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var watch = require('gulp-watch');
-var ts = require("gulp-typescript");
 
 var target = "dist";
 

@@ -12,9 +12,7 @@
     "gulp-rename": "1.2.2",
     "gulp-uglify": "^0.2.1",
     "gulp-util": "^3.0.7",
-    "gulp-watch": "4.3.5",
-    "typescript": "2.1.5",
-    "karma": "0.13"
+    "gulp-watch": "4.3.5"
   },
   "name": "angular-plugin",
   "version": "0.0.4",
