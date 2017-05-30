@@ -12,6 +12,8 @@ if [ "$?" != "0" ]; then
 	exit -2
 fi
 
+gulp clean build
+
 version=`jq -r '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .version | split(".")[2]  | tonumber + 1 | tostring) ] | join(".")' package.json`
 echo "version is ${version}"
 
