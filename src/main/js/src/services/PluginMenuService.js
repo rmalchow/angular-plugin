@@ -16,18 +16,20 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		}
         		return menus[path].children;
         	},
-        	addItem : function(path,name,item,view) {
+        	addItem : function(path,name,item) {
 
-        		routeProvider.when(path+name,view);
+        		item.path = path+name;
+
+        		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(item.path);});
+        		routeProvider.when(item.path,view);
         		
         		if(item['visible'] == 'undefined') {
         			item.visible = true;
         		}
+        		if(item['active'] == 'undefined') {
+        			item.active = false;
+        		}
         		
-        		item.active = false;
-        		item.path = path+name;
-        		
-	    		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(path+name);});
         		menus[path] = menus[path] || {children:[],path:path};
 	    		menus[path].children.push(item);
 	    		menus[path+name] = menus[path+name] || {children:[]};
