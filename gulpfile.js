@@ -9,6 +9,7 @@ var target="./dist/"
 gulp.task('build-js', function() {
     return gulp.src(
     		[
+    			'js/main.js',
     			'js/**/*.js'
     		]
     	)

@@ -1,3 +1,5 @@
+angular.module( 'angular-plugin', ["ngRoute"] );
+
 angular.module("angular-plugin").directive(
 	"includeComponents",
 	function(PluginMenuService,$route,$templateCache,$controller,$compile) {
