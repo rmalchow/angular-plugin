@@ -21,31 +21,27 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		item.path = path+name;
 
         		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(item.path);});
-        		routeProvider.when(item.path,view);
+        		routeProvider.when(item.path,item);
         		
         		if(item['visible'] == 'undefined') {
         			item.visible = true;
         		}
-        		if(item['active'] == 'undefined') {
-        			item.active = false;
-        		}
+
+        		item.active = $location.path().startsWith(item.path);
+        		console.log(item.active);
         		
         		menus[path] = menus[path] || {children:[],path:path};
 	    		menus[path].children.push(item);
 	    		menus[path+name] = menus[path+name] || {children:[]};
-	    		
-	    		console.log(JSON.stringify(menus, null, 2));
-	    		
         	},
-	    	setDefault : function(view) {
-	    		routeProvider.otherwise(view);
+	    	setDefault : function(item) {
+	    		routeProvider.otherwise(item);
 	    	},
-        	addRoute : function(path,view) {
-
-        		routeProvider.when(path,view);
+        	addRoute : function(path,item) {
+        		routeProvider.when(path,item);
         	},
-	    	setDefault : function(view) {
-	    		routeProvider.otherwise(view);
+	    	setDefault : function(item) {
+	    		routeProvider.otherwise(item);
 	    	}
     	}
      });

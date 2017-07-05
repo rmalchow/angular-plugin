@@ -1,3 +1,5 @@
+angular.module("mcg-automation").requires.push("angular-plugin");
+
 angular.module("angular-plugin",["ngRoute"]);
 
 
