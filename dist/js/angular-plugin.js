@@ -1,60 +1,37 @@
-module BaseModule
-{
-  export class Module
-  {
-    app: ng.IModule;
- 
-    constructor( name: string, modules: Array<string> ) {
-      this.app = angular.module(name,modules );
-    }
- 
-    addController( name: string, controller: Function ) {
-      this.app.controller( name, controller );
-    }
-
-    addService( name: string, factory: Function ) {
-      this.app.factory(name, factory);
-    }
-  }
-}
-
-
-module AngularPluginModule
-{
-  var angularPlugin = new BaseModule.Module( 'angular-plugin', ["ngRoute"] );
-  angularPlugin.addService("menuService", function($routeProvider) {
-      
-      
-      
-      
-        
-        
-  });
-}
-angular.module("angular-plugin",["ngRoute"]);
-
-
-angular.module("angular-plugin")
-.config(function($routeProvider,$locationProvider) {
-		$locationProvider.hashPrefix('');
-		angular.module("angular-plugin").routeProvider = $routeProvider;
-});
 angular.module("angular-plugin").directive(
 	"includeComponents",
-	function(PluginComponentService) {
+	function(PluginMenuService,$route,$templateCache,$controller,$compile) {
+		console.log($route);
 		return {
-			transclude: 'element',
 			scope: {
 				path : "@"
 			},
-			link: function(scope, el, attr, ctrl, transclude) {
-				var items = PluginComponentService.get(scope.path);
-				items.forEach(function(each){
-					transclude(function(transEl,transScope) {
-						transScope.item = each;
-						el.parent().append(transEl);
-					});
-				});
+			link: function(scope, el, attr, ctrl,transclude) {
+				var items = PluginMenuService.get(scope.path);
+				if(items.length > 0) {
+					items.forEach(
+						function(each) {
+							
+							templ = $templateCache.get(each.templateUrl);
+							var child = $(templ)							
+							el.append(child);
+							var controller = $controller(each.controller, {});
+							var link = $compile(child.contents());
+
+							childScope = scope.$new();
+							
+							childScope[each.controllerAs] = controller;
+							childScope["component"] = each;
+							childScope.$watch("component.visible", function(a,b,c,d) { if(a) { child.show() } else { child.hide() } });
+							
+							child.data('$ngControllerController', controller);
+							
+							console.log(child);
+							
+							link(childScope);
+						}
+					);
+				}
 			}
 		}
 	});
@@ -68,35 +45,22 @@ angular.module("angular-plugin").directive(
 			},
 			link: function(scope, el, attr, ctrl, transclude) {
 				var items = PluginMenuService.get(scope.path);
-				items.forEach(function(each){
-					transclude(function(transEl,transScope) {
-						transScope.item = each;
-						transScope.children = PluginMenuService.get(each.path);
-						el.parent().append(transEl);
+				if(items.length > 0) {
+					items.forEach(function(each){
+						transclude(function(transEl,transScope) {
+							transScope.item = each;
+							transScope.children = PluginMenuService.get(each.path);
+							el.parent().append(transEl);
+						});
 					});
-				});
+				} else {
+					transclude(function(transEl,transScope) {
+						el.hide();
+					});
+				}
 			}
 		}
 	});
-angular.module("angular-plugin").service("PluginComponentService" , function() {
-    	
-    	var components = {};
-
-        return {
-        	get : function(path) {
-	    		console.log("getting: ",path);
-	    		console.log("getting: ",components[path]);
-        		return components[path].children;
-        	},
-        	addItem : function(path,component) {
-        		console.log("adding: "+path,component);
-        		components[path] = components[path] || {children:[]};
-	    		components[path].children.push(component);
-	    		console.log("now: ",components[path]);
-        	}
-    	}
-     });
-
 angular.module("angular-plugin").service("PluginMenuService" , function($route,$rootScope,$location) {
     	
     	var routeProvider = angular.module("angular-plugin").routeProvider;
@@ -115,34 +79,32 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		}
         		return menus[path].children;
         	},
-        	addItem : function(path,name,item,view) {
+        	addItem : function(path,name,item) {
 
-        		routeProvider.when(path+name,view);
+        		item.path = path+name;
+
+        		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(item.path);});
+        		routeProvider.when(item.path,item);
         		
         		if(item['visible'] == 'undefined') {
         			item.visible = true;
         		}
+
+        		item.active = $location.path().startsWith(item.path);
+        		console.log(item.active);
         		
-        		item.active = false;
-        		item.path = path+name;
-        		
-	    		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(path+name);});
         		menus[path] = menus[path] || {children:[],path:path};
 	    		menus[path].children.push(item);
 	    		menus[path+name] = menus[path+name] || {children:[]};
-	    		
-	    		console.log(JSON.stringify(menus, null, 2));
-	    		
         	},
-	    	setDefault : function(view) {
-	    		routeProvider.otherwise(view);
+	    	setDefault : function(item) {
+	    		routeProvider.otherwise(item);
 	    	},
-        	addRoute : function(path,view) {
-
-        		routeProvider.when(path,view);
+        	addRoute : function(path,item) {
+        		routeProvider.when(path,item);
         	},
-	    	setDefault : function(view) {
-	    		routeProvider.otherwise(view);
+	    	setDefault : function(item) {
+	    		routeProvider.otherwise(item);
 	    	}
     	}
      });
