@@ -16,7 +16,7 @@ version=`jq -r '[ (.version | split(".")[0]) ,(.version | split(".")[1]) , ( .ve
 echo "version is ${version}"
 
 package=`jq --arg version ${version} '.version = $version' package.json`
-echo ${package} > package.json
+echo ${package} |jq > package.json
 
 git tag "${version}"
 git add .
