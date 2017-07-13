@@ -33,6 +33,7 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		menus[path] = menus[path] || {children:[],path:path};
 	    		menus[path].children.push(item);
 	    		menus[path+name] = menus[path+name] || {children:[]};
+	    		menus[path+name]['item'] = item;
         	},
 	    	setDefault : function(item) {
 	    		routeProvider.otherwise(item);

@@ -15,12 +15,16 @@ angular.module("angular-plugin").directive(
 							templ = $templateCache.get(each.templateUrl);
 							var child = $(templ)							
 							el.append(child);
-							var controller = $controller(each.controller, {});
 							var link = $compile(child.contents());
 
 							childScope = scope.$new();
 							
-							childScope[each.controllerAs] = controller;
+							if(each.controller) {
+								var controller = $controller(each.controller, {});
+								if(each.controllerAs) {
+									childScope[each.controllerAs] = controller;
+								}
+							}
 							childScope["component"] = each;
 							childScope.$watch("component.visible", function(a,b,c,d) { if(a) { child.show() } else { child.hide() } });
 							
