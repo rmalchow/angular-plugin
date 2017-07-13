@@ -23,12 +23,16 @@ angular.module("angular-plugin").directive(
 							templ = $templateCache.get(each.templateUrl);
 							var child = $(templ)							
 							el.append(child);
-							var controller = $controller(each.controller, {});
 							var link = $compile(child.contents());
 
 							childScope = scope.$new();
 							
-							childScope[each.controllerAs] = controller;
+							if(each.controller) {
+								var controller = $controller(each.controller, {});
+								if(each.controllerAs) {
+									childScope[each.controllerAs] = controller;
+								}
+							}
 							childScope["component"] = each;
 							childScope.$watch("component.visible", function(a,b,c,d) { if(a) { child.show() } else { child.hide() } });
 							
@@ -104,6 +108,7 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		menus[path] = menus[path] || {children:[],path:path};
 	    		menus[path].children.push(item);
 	    		menus[path+name] = menus[path+name] || {children:[]};
+	    		menus[path+name]['item'] = item;
         	},
 	    	setDefault : function(item) {
 	    		routeProvider.otherwise(item);
