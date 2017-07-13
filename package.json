@@ -15,7 +15,7 @@
     "gulp-watch": "^4.3.5"
   },
   "name": "angular-plugin",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "main": "gulpfile.js",
   "repository": {
     "type": "git",
