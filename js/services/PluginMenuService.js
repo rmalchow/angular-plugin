@@ -16,6 +16,15 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		}
         		return menus[path].children;
         	},
+        	getItems : function() {
+        		out = _.keys(menus);
+        		out = _.sortBy(out,function(path){return path;});
+        		return out;
+        	},
+        	getItem : function(path) {
+        		console.log("one item: ",menus[path]);
+        		return menus[path];
+        	},
         	addItem : function(path,name,item) {
 
         		item.path = path+name;
@@ -30,10 +39,10 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		item.active = $location.path().startsWith(item.path);
         		console.log(item.active);
         		
-        		menus[path] = menus[path] || {children:[],path:path};
+        		menus[path] = menus[path] || {children:[]};
 	    		menus[path].children.push(item);
-	    		menus[path+name] = menus[path+name] || {children:[]};
-	    		menus[path+name]['item'] = item;
+	    		menus[path].children = _.sortBy(menus[path].children,function(child){return child.order;});
+	    		menus[path+name] = {children:[], item : item};
         	},
 	    	setDefault : function(item) {
 	    		routeProvider.otherwise(item);
