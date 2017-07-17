@@ -4,15 +4,16 @@ angular.module("angular-plugin").directive(
 		return {
 			transclude: 'element',
 			scope: {
-				path : "@"
+				menuItem : "@"
 			},
 			link: function(scope, el, attr, ctrl, transclude) {
-				var items = PluginMenuService.get(scope.path);
+				var items = PluginMenuService.get(scope.menuItem);
 				if(items.length > 0) {
 					items.forEach(function(each){
 						transclude(function(transEl,transScope) {
 							transScope.item = each;
 							transScope.children = PluginMenuService.get(each.path);
+							transScope.$watch("item.visible", function(a,b,c,d) { if(a) { transEl.show() } else { transEl.hide() } });
 							el.parent().append(transEl);
 						});
 					});

@@ -42,7 +42,7 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		menus[path] = menus[path] || {children:[]};
 	    		menus[path].children.push(item);
 	    		menus[path].children = _.sortBy(menus[path].children,function(child){return child.order;});
-	    		menus[path+name] = {children:[], item : item};
+	    		menus[path+name] = menus[path+name] || {children:[], item : item};
         	},
 	    	setDefault : function(item) {
 	    		routeProvider.otherwise(item);

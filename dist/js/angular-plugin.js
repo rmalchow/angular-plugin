@@ -12,10 +12,10 @@ angular.module("angular-plugin").directive(
 		console.log($route);
 		return {
 			scope: {
-				path : "@"
+				includeComponents : "@"
 			},
 			link: function(scope, el, attr, ctrl,transclude) {
-				var items = PluginMenuService.get(scope.path);
+				var items = PluginMenuService.get(scope.includeComponents);
 				if(items.length > 0) {
 					items.forEach(
 						function(each) {
@@ -53,15 +53,16 @@ angular.module("angular-plugin").directive(
 		return {
 			transclude: 'element',
 			scope: {
-				path : "@"
+				menuItem : "@"
 			},
 			link: function(scope, el, attr, ctrl, transclude) {
-				var items = PluginMenuService.get(scope.path);
+				var items = PluginMenuService.get(scope.menuItem);
 				if(items.length > 0) {
 					items.forEach(function(each){
 						transclude(function(transEl,transScope) {
 							transScope.item = each;
 							transScope.children = PluginMenuService.get(each.path);
+							transScope.$watch("item.visible", function(a,b,c,d) { if(a) { transEl.show() } else { transEl.hide() } });
 							el.parent().append(transEl);
 						});
 					});
@@ -117,7 +118,7 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		menus[path] = menus[path] || {children:[]};
 	    		menus[path].children.push(item);
 	    		menus[path].children = _.sortBy(menus[path].children,function(child){return child.order;});
-	    		menus[path+name] = {children:[], item : item};
+	    		menus[path+name] = menus[path+name] || {children:[], item : item};
         	},
 	    	setDefault : function(item) {
 	    		routeProvider.otherwise(item);

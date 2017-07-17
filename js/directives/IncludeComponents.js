@@ -4,10 +4,10 @@ angular.module("angular-plugin").directive(
 		console.log($route);
 		return {
 			scope: {
-				path : "@"
+				includeComponents : "@"
 			},
 			link: function(scope, el, attr, ctrl,transclude) {
-				var items = PluginMenuService.get(scope.path);
+				var items = PluginMenuService.get(scope.includeComponents);
 				if(items.length > 0) {
 					items.forEach(
 						function(each) {
