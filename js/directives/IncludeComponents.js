@@ -1,7 +1,6 @@
 angular.module("angular-plugin").directive(
 	"includeComponents",
 	function(PluginMenuService,$route,$templateCache,$controller,$compile) {
-		console.log($route);
 		return {
 			scope: {
 				includeComponents : "@"
