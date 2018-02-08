@@ -153,7 +153,7 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
 
         		item.path = path+name;
 
-        		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = $location.path().startsWith(item.path);});
+        		$rootScope.$on("$locationChangeSuccess", function(e,u) { item.active = ($location.path().indexOf(item.path) == 0) ;});
         		routeProvider.when(item.path,item);
         		
         		item.order = item.order | 0;
@@ -162,13 +162,14 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         			item.visible = true;
         		}
 
-        		item.active = $location.path().startsWith(item.path);
+        		item.active = ($location.path().indexOf(item.path) == 0);
         		
         		menus[path] = menus[path] || {children:[]};
         		
         		
         		var count = 0;
         		
+        		// remove any old items with the same ID
         		_.each(menus[path].children, function(c) {
         			if(c && item && c.id && item.id && c.id==item.id) {
         				menus[path].children.splice(count,1);
