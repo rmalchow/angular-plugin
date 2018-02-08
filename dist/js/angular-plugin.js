@@ -165,6 +165,16 @@ angular.module("angular-plugin").service("PluginMenuService" , function($route,$
         		item.active = $location.path().startsWith(item.path);
         		
         		menus[path] = menus[path] || {children:[]};
+        		
+        		
+        		var count = 0;
+        		
+        		_.each(menus[path].children, function(c) {
+        			if(c && item && c.id && item.id && c.id==item.id) {
+        				menus[path].children.splice(count,1);
+        			}
+        			count++;
+        		});
 	    		menus[path].children.push(item);
 	    		menus[path].children = _.sortBy(
 	    						menus[path].children,
